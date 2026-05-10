@@ -7,8 +7,6 @@ matplotlib
 flask
 flask-cors
 
-streamlit
-
 langgraph
 langchain
 langchain-core
@@ -21,8 +19,6 @@ requests
 httpx
 
 tavily-python
-flask
-flask-cors
 flask-mysqldb
 PyJWT
 bcrypt
