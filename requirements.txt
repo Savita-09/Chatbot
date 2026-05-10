@@ -1,24 +1,23 @@
-streamlit
-pyautogen
-numpy
-python-dotenv
-matplotlib 
+streamlit==1.35.0
+numpy==1.26.4
+matplotlib==3.8.4
 
-flask
-flask-cors
+flask==3.0.3
+flask-cors==4.0.1
 
-langgraph
-langchain
-langchain-core
-langchain-anthropic
-langchain-community
+langgraph==0.0.55
+langchain==0.2.1
+langchain-core==0.2.3
+langchain-community==0.2.1
+langchain-anthropic==0.1.15
 
-mysql-connector-python
+mysql-connector-python==8.4.0
 
-requests
-httpx
+requests==2.32.3
+httpx==0.27.0
 
-tavily-python
-flask-mysqldb
-PyJWT
-bcrypt
+python-dotenv==1.0.1
+tavily-python==0.3.3
+
+PyJWT==2.8.0
+bcrypt==4.1.3
