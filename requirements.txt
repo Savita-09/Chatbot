@@ -26,4 +26,3 @@ flask-cors
 flask-mysqldb
 PyJWT
 bcrypt
-python-dotenv
