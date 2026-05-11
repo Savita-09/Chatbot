@@ -16,3 +16,6 @@ python-dotenv
 joblib
 pymssql
 sqlalchemy
+langchain-ollama
+langchain
+ollama
