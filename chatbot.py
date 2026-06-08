@@ -18,9 +18,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ─────────────────────────────────────────────────────────────
-# ENV
-# ─────────────────────────────────────────────────────────────
+
 GROQ_API_KEY   = os.getenv("GROQ_API_KEY", "")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
@@ -30,9 +28,6 @@ BACKEND        = os.getenv("BACKEND", "http://localhost:5000")
 if TAVILY_API_KEY:
     os.environ["TAVILY_API_KEY"] = TAVILY_API_KEY
 
-# ─────────────────────────────────────────────────────────────
-# BACKEND HELPERS  (safe JSON — never crashes on empty body)
-# ─────────────────────────────────────────────────────────────
 def _headers():
     token = st.session_state.get("token", "")
     return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
@@ -79,9 +74,6 @@ def api_delete(path):
     except Exception as e:
         return {"error": str(e)}, 500
 
-# ─────────────────────────────────────────────────────────────
-# PLAN DEFINITIONS
-# ─────────────────────────────────────────────────────────────
 PLANS = {
     "free": {
         "name": "Free", "price": 0, "price_label": "Free forever",
@@ -152,9 +144,7 @@ IMAGE_MODELS_ALL = {
     "dall-e-3-free"   : "✨ DALL·E Style",
 }
 
-# ─────────────────────────────────────────────────────────────
-# LANGGRAPH
-# ─────────────────────────────────────────────────────────────
+
 class State(BaseModel):
     messages: Annotated[list, add_messages]
     image   : Any  = None
@@ -254,9 +244,7 @@ def build_graph():
     gb.add_edge("image_node", END)
     return gb.compile()
 
-# ─────────────────────────────────────────────────────────────
-# PAGE CONFIG + CSS
-# ─────────────────────────────────────────────────────────────
+
 st.set_page_config(page_icon="✦", page_title="Nexus AI", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown("""
@@ -356,9 +344,7 @@ div[data-baseweb="select"]>div{background:var(--bg3)!important;border-color:var(
 </style>
 """, unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# SESSION STATE INIT
-# ─────────────────────────────────────────────────────────────
+
 def init():
     today = str(date.today())
     defs  = {
@@ -428,9 +414,7 @@ def plan_allows_model(model_id, kind="chat"):
     key = "image_models" if kind == "image" else "models"
     return model_id in my_plan()[key]
 
-# ─────────────────────────────────────────────────────────────
-# MARKDOWN HELPERS
-# ─────────────────────────────────────────────────────────────
+
 def _esc(t):
     return t.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
 
@@ -464,9 +448,7 @@ def md_to_html(text):
     if in_ol: out.append('</ol>')
     return ''.join(out)
 
-# ─────────────────────────────────────────────────────────────
-# SESSION MANAGEMENT
-# ─────────────────────────────────────────────────────────────
+
 def load_sessions():
     """Load all sessions from backend into local state."""
     if not st.session_state.get("token"):
@@ -550,9 +532,7 @@ def delete_session(sid):
     if st.session_state.active_session == sid:
         st.session_state.active_session = None
 
-# ─────────────────────────────────────────────────────────────
-# PROCESS MESSAGE
-# ─────────────────────────────────────────────────────────────
+
 def process_message(user_text):
     from langchain_core.messages import HumanMessage
     mode = detect_mode(user_text)
@@ -604,9 +584,7 @@ def process_message(user_text):
     except Exception as e:
         add_msg("assistant", f"⚠️ **Error:** `{e}`", mode="chat")
 
-# ─────────────────────────────────────────────────────────────
-# UPGRADE MODAL
-# ─────────────────────────────────────────────────────────────
+
 @st.dialog("✦ Choose Your Plan", width="large")
 def upgrade_modal():
     reason = st.session_state.get("upgrade_reason", "")
@@ -676,9 +654,7 @@ def upgrade_modal():
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# BILLING PAGE
-# ─────────────────────────────────────────────────────────────
+
 def render_billing():
     pending = st.session_state.get("pending_plan", "pro")
     plan    = PLANS[pending]
@@ -770,9 +746,7 @@ def render_billing():
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('<div style="text-align:center;font-size:12px;color:var(--text-3);margin-top:14px">By subscribing you agree to our Terms · No refunds on partial months</div>', unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# ACCOUNT PAGE
-# ─────────────────────────────────────────────────────────────
+
 def render_account():
     render_sidebar()
     plan = my_plan()
@@ -884,9 +858,7 @@ def render_account():
             st.session_state.page = "chat"; st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# SIDEBAR
-# ─────────────────────────────────────────────────────────────
+
 def render_sidebar():
     plan  = my_plan()
     pname = plan["name"].lower()
@@ -1019,9 +991,7 @@ def render_sidebar():
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# AUTH PAGE
-# ─────────────────────────────────────────────────────────────
+
 def render_auth():
     _, col, _ = st.columns([1, 1.1, 1])
     with col:
@@ -1116,9 +1086,7 @@ def render_auth():
           <span style="color:var(--accent)">⚡ Pro from $9/mo</span> for unlimited everything
         </div>""", unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# BUBBLE RENDERER
-# ─────────────────────────────────────────────────────────────
+
 def render_bubble(msg):
     role    = msg["role"]; content = msg["content"]
     mode    = msg.get("mode", "chat")
@@ -1157,9 +1125,7 @@ def render_bubble(msg):
       </div>
     </div>""", unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────────────────────
-# CHAT PAGE
-# ─────────────────────────────────────────────────────────────
+
 EXAMPLES = [
     ("💬","Explain ML transformers","Explain how transformer architecture works in machine learning"),
     ("🔍","Latest AI news (search)","search for the latest AI breakthroughs and news in 2026"),
@@ -1222,9 +1188,7 @@ def render_chat():
             process_message(user_input.strip())
         st.rerun()
 
-# ─────────────────────────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────────────────────────
+
 def main():
     page = st.session_state.page
     if not st.session_state.username or page in ("login","signup"):
